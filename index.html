@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>FESSA Caja</title>
+<meta name="theme-color" content="#07070b">
+<style>
+:root{
+  --bg:#07070b;--panel:#101018;--panel2:#151522;--line:rgba(210,165,255,.22);
+  --violet:#b36cff;--violet2:#7b2cff;--soft:#d8b9ff;--white:#fff;--muted:#b9b0c5;
+  --green:#34d399;--red:#ff5b7a;--blue:#60a5fa;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;min-height:100vh;background:
+radial-gradient(circle at top right,rgba(179,108,255,.22),transparent 30%),
+radial-gradient(circle at bottom left,rgba(123,44,255,.18),transparent 35%),
+linear-gradient(#090910,#030305);font-family:Arial,Helvetica,sans-serif;color:var(--white)}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.13;background:
+linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),
+linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:34px 34px}
+.app{max-width:520px;margin:auto;min-height:100vh;padding:18px 15px 88px}
+.top{text-align:center;margin:6px 0 14px}.logo{font-size:48px;font-weight:900;font-style:italic;letter-spacing:2px}
+.logo span{color:var(--violet);text-shadow:0 0 22px rgba(179,108,255,.8)}
+.subtitle{letter-spacing:8px;color:#eee;font-size:12px}.screen{display:none;animation:fade .22s}.screen.active{display:block}
+@keyframes fade{from{opacity:.25;transform:translateY(8px)}to{opacity:1;transform:none}}
+.card{border:1px solid var(--line);border-radius:23px;background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.025));box-shadow:0 18px 38px #0009,0 0 35px rgba(179,108,255,.08);padding:16px;margin:12px 0}
+h1,h2,h3{margin:5px 0 10px}.muted{color:var(--muted);font-size:14px;line-height:1.35}.date{color:var(--soft);font-weight:900}
+.totalBox{text-align:center;padding:20px}.totalBox .label{color:var(--muted);text-transform:uppercase;letter-spacing:2px;font-size:12px}.total{font-size:48px;font-weight:900;color:#fff;text-shadow:0 0 22px rgba(179,108,255,.45);margin:8px 0}
+.percentBtns{display:flex;justify-content:center;gap:8px;margin-top:6px}.tiny{width:auto;margin:0;padding:7px 12px;border-radius:999px;font-size:12px;background:#161624;border:1px solid var(--line);color:var(--soft);box-shadow:none}.tiny.on{background:linear-gradient(180deg,var(--violet),var(--violet2));color:#fff}
+.percentResult{margin-top:9px;color:var(--soft);font-weight:900}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.person{min-height:120px;text-align:left}.person b{display:block;font-size:21px}.person .amount{font-size:24px;font-weight:900;color:var(--soft);margin-top:8px}.person small{color:var(--muted)}
+button,.btn{width:100%;border:0;border-radius:17px;padding:15px 14px;margin-top:12px;background:linear-gradient(180deg,var(--violet),var(--violet2));color:#fff;font-weight:900;font-size:15px;letter-spacing:.5px;text-transform:uppercase;box-shadow:0 0 24px rgba(179,108,255,.32);text-decoration:none;display:block;text-align:center}
+button.secondary{background:#11111a;border:1px solid var(--line);box-shadow:none;color:#eee}button.green{background:linear-gradient(180deg,#38eaa1,#11875b)}button.red{background:linear-gradient(180deg,#ff6682,#9d1730)}
+label{display:block;margin:12px 0 6px;color:#ddd}input,select,textarea{width:100%;padding:14px;border-radius:14px;border:1px solid var(--line);background:#07070c;color:#fff;font-size:16px;outline:none}textarea{min-height:80px;resize:vertical}
+.sale{border:1px solid var(--line);border-radius:17px;background:#090910;padding:13px;margin:10px 0}.saleTop{display:flex;justify-content:space-between;gap:10px}.sale b{font-size:16px}.sale .money{color:var(--green);font-weight:900;font-size:20px}.pills{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}.pill{font-size:12px;padding:7px 9px;border-radius:999px;background:#202030;color:#eee;border:1px solid rgba(255,255,255,.06)}
+.nav{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:min(520px,100%);display:grid;grid-template-columns:repeat(4,1fr);gap:5px;padding:9px 10px 12px;background:linear-gradient(transparent,#000 25%,#000);z-index:20}.nav div{text-align:center;color:#aaa;font-weight:900;font-size:11px;text-transform:uppercase;border:1px solid transparent;border-radius:16px;padding:7px}.nav div.on{color:var(--soft);border-color:var(--line);background:rgba(179,108,255,.12)}.nav span{display:block;font-size:23px}
+.summary{display:grid;grid-template-columns:1fr 1fr;gap:10px}.tile{border:1px solid var(--line);border-radius:17px;padding:14px;background:#090910}.tile b{display:block}.tile .value{font-size:22px;color:var(--soft);font-weight:900;margin-top:5px}
+.toast{position:fixed;left:50%;top:15px;transform:translateX(-50%) translateY(-110px);width:min(460px,92%);background:#11111a;border:1px solid var(--line);border-radius:17px;padding:14px;text-align:center;font-weight:900;z-index:99;transition:.25s}.toast.show{transform:translateX(-50%) translateY(0)}
+.empty{border:1px dashed var(--line);border-radius:16px;color:var(--muted);padding:18px;text-align:center}.rowBtns{display:grid;grid-template-columns:1fr 1fr;gap:8px}.nameRow{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center}.nameRow button{margin:0;width:auto;padding:10px 12px;border-radius:12px}.histFilter{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:390px){.logo{font-size:42px}.total{font-size:40px}.grid,.summary{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="toast" class="toast"></div>
+<main class="app">
+  <div class="top">
+    <div class="logo">FESSA <span>CAJA</span></div>
+    <div class="subtitle">PELUQUERÍA</div>
+  </div>
+
+  <section id="home" class="screen active">
+    <div class="card totalBox">
+      <div class="date" id="todayLabel"></div>
+      <div class="label">Total del día</div>
+      <div class="total" id="todayTotal">$0</div>
+      <div class="muted">Suma total de todos los peluqueros</div><button onclick="go('sale')">➕ Agregar venta</button>
+    </div>
+
+    <div class="card">
+      <h2>💇 Peluqueros</h2>
+      <p class="muted">Tocá un peluquero para cargar una venta rápido.</p>
+      <div class="grid" id="peopleCards"></div>
+    </div>
+
+    <div class="card">
+      <h2>📌 Totales por pago</h2>
+      <div class="summary" id="paySummary"></div>
+    </div>
+  </section>
+
+  <section id="sale" class="screen">
+    <div class="card">
+      <h2>➕ Nueva venta</h2>
+      <label>Peluquero</label>
+      <select id="salePerson"></select>
+      <label>Servicio</label>
+      <input id="saleService" placeholder="Ej: Corte, color, brushing...">
+      <label>Importe</label>
+      <input id="saleAmount" type="number" placeholder="Ej: 15000">
+      <label>Método de pago</label>
+      <select id="saleMethod">
+        <option>Efectivo</option>
+        <option>Transferencia</option>
+        <option>Tarjeta</option>
+      </select>
+      <label>¿Dejó seña?</label>
+      <select id="saleDeposit">
+        <option>No</option>
+        <option>Sí</option>
+      </select>
+      <label>Observación</label>
+      <textarea id="saleNote" placeholder="Opcional"></textarea>
+      <button class="green" onclick="saveSale()">Guardar venta</button>
+      <button class="secondary" onclick="go('home')">Volver</button>
+    </div>
+  </section>
+
+  <section id="history" class="screen">
+    <div class="card">
+      <h2>📅 Historial</h2>
+      <div class="histFilter">
+        <input id="historyDate" type="date" onchange="render()">
+        <button class="secondary" onclick="setTodayHistory()">Hoy</button>
+      </div>
+      <div id="historyList"></div>
+    </div>
+  </section>
+
+  <section id="close" class="screen">
+    <div class="card">
+      <h2>📄 Cierre de caja</h2>
+      <p class="muted">Resumen del día seleccionado.</p>
+      <div id="closeSummary"></div>
+      <button onclick="closeDay()">Cerrar caja del día</button>
+      <button class="secondary" onclick="copyClose()">📋 Copiar resumen</button>
+    </div>
+  </section>
+
+  <section id="config" class="screen">
+    <div class="card">
+      <h2>⚙️ Configuración</h2>
+      <p class="muted">Agregá o quitá peluqueros. No queda fijo en el código.</p>
+      <label>Nuevo peluquero</label>
+      <input id="newPerson" placeholder="Nombre">
+      <button onclick="addPerson()">Agregar peluquero</button>
+      <div id="peopleConfig"></div>
+      <button class="red" onclick="clearAll()">Borrar todos los datos</button>
+    </div>
+  </section>
+</main>
+
+<nav class="nav">
+  <div id="navHome" class="on" onclick="go('home')"><span>🏠</span>Inicio</div>
+  <div id="navSale" onclick="go('sale')"><span>➕</span>Venta</div>
+  <div id="navHistory" onclick="go('history')"><span>📅</span>Historial</div>
+  <div id="navConfig" onclick="go('config')"><span>⚙️</span>Config</div>
+</nav>
+
+<script>
+const LS_PEOPLE="fessa_caja_people_v1", LS_SALES="fessa_caja_sales_v1", LS_CLOSED="fessa_caja_closed_v1";
+let selectedPercent=null;
+let people=JSON.parse(localStorage.getItem(LS_PEOPLE)||'["Federico","Myriam","Melisa"]');
+let sales=JSON.parse(localStorage.getItem(LS_SALES)||"[]");
+let closed=JSON.parse(localStorage.getItem(LS_CLOSED)||"{}");
+
+function save(){localStorage.setItem(LS_PEOPLE,JSON.stringify(people));localStorage.setItem(LS_SALES,JSON.stringify(sales));localStorage.setItem(LS_CLOSED,JSON.stringify(closed))}
+function money(n){return "$"+Number(n||0).toLocaleString("es-AR")}
+function todayISO(){return new Date().toISOString().slice(0,10)}
+function niceDate(iso){return new Date(iso+"T00:00:00").toLocaleDateString("es-AR",{weekday:"long",day:"2-digit",month:"2-digit",year:"numeric"})}
+function toast(msg){toastEl.textContent=msg;toastEl.classList.add("show");setTimeout(()=>toastEl.classList.remove("show"),2300)}
+function currentDate(){return historyDate?.value||todayISO()}
+function salesByDate(date=todayISO()){return sales.filter(s=>s.date===date)}
+function totalByDate(date=todayISO()){return salesByDate(date).reduce((a,s)=>a+Number(s.amount||0),0)}
+function byMethod(date=todayISO(),method){return salesByDate(date).filter(s=>s.method===method).reduce((a,s)=>a+Number(s.amount||0),0)}
+function byPerson(date=todayISO(),person){return salesByDate(date).filter(s=>s.person===person).reduce((a,s)=>a+Number(s.amount||0),0)}
+
+function go(id){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  document.querySelectorAll(".nav div").forEach(n=>n.classList.remove("on"));
+  ({home:navHome,sale:navSale,history:navHistory,close:navHistory,config:navConfig}[id]||navHome).classList.add("on");
+  render();
+}
+function setPersonAndGo(p){salePerson.value=p;go("sale")}
+function calcPercent(p){selectedPercent=p}
+function showPersonPercent(id,total,percent){
+  const box=document.getElementById("homepct_"+id);
+  const b50=document.getElementById("home50_"+id);
+  const b55=document.getElementById("home55_"+id);
+  if(!box)return;
+  box.textContent=percent+"% = "+money(total*percent/100);
+  if(b50)b50.classList.toggle("on",percent===50);
+  if(b55)b55.classList.toggle("on",percent===55);
+}
+function render(){
+  todayLabel.textContent=niceDate(todayISO());
+  todayTotal.textContent=money(totalByDate(todayISO()));
+
+  salePerson.innerHTML=people.map(p=>`<option>${p}</option>`).join("");
+  peopleCards.innerHTML=people.length?people.map(p=>{
+  const total=byPerson(todayISO(),p), id=safeId(p);
+  return `<div class="card person"><b>${p}</b><small>Total hoy</small><div class="amount">${money(total)}</div><div class="percentBtns" style="justify-content:flex-start"><button id="home50_${id}" class="tiny" onclick="showPersonPercent('${id}',${total},50)">50%</button><button id="home55_${id}" class="tiny" onclick="showPersonPercent('${id}',${total},55)">55% feriado</button></div><div class="percentResult" id="homepct_${id}"></div><button class="tiny" onclick="setPersonAndGo('${p.replaceAll("'","\'")}')">Cargar venta</button></div>`
+}).join(""):'<div class="empty">Agregá peluqueros en Configuración.</div>';
+  paySummary.innerHTML=["Efectivo","Transferencia","Tarjeta"].map(m=>`<div class="tile"><b>${m}</b><div class="value">${money(byMethod(todayISO(),m))}</div></div>`).join("");
+
+  if(!historyDate.value) historyDate.value=todayISO();
+  const d=currentDate(), rows=salesByDate(d).sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)));
+  historyList.innerHTML=`<h3>${niceDate(d)}</h3><div class="summary"><div class="tile"><b>Total</b><div class="value">${money(totalByDate(d))}</div></div><div class="tile"><b>Ventas</b><div class="value">${rows.length}</div></div></div>`+(rows.length?rows.map(s=>saleHTML(s,true)).join(""):'<div class="empty">No hay ventas cargadas en esta fecha.</div>')+`<button onclick="go('close')">Ver cierre</button>`;
+
+  closeSummary.innerHTML=closeHTML(d);
+  peopleConfig.innerHTML=people.map((p,i)=>`<div class="sale nameRow"><b>${p}</b><button class="red tiny" onclick="removePerson(${i})">Eliminar</button></div>`).join("")||'<div class="empty">No hay peluqueros.</div>';
+}
+function saleHTML(s,allowDelete=false){
+  return `<div class="sale"><div class="saleTop"><div><b>${s.person}</b><div class="muted">${new Date(s.createdAt).toLocaleTimeString("es-AR",{hour:"2-digit",minute:"2-digit"})} · ${s.service||"Servicio"}</div></div><div class="money">${money(s.amount)}</div></div><div class="pills"><span class="pill">${s.method}</span><span class="pill">Señó: ${s.deposit||"No"}</span>${s.note?`<span class="pill">${s.note}</span>`:""}</div>${allowDelete?`<button class="secondary tiny" onclick="deleteSale('${s.id}')">Eliminar</button>`:""}</div>`
+}
+function saveSale(){
+  const person=salePerson.value, service=saleService.value.trim(), amount=Number(saleAmount.value||0), method=saleMethod.value, note=saleNote.value.trim();
+  if(!person){toast("Agregá un peluquero.");return}
+  if(!service){toast("Completá el servicio.");return}
+  if(amount<=0){toast("Completá un importe válido.");return}
+  sales.push({id:Date.now()+"",date:todayISO(),createdAt:new Date().toISOString(),person,service,amount,method,deposit:saleDeposit.value,note});
+  saleService.value="";saleAmount.value="";saleNote.value="";saleDeposit.value="No";
+  save();toast("Venta guardada.");go("home");
+}
+function deleteSale(id){if(confirm("¿Eliminar esta venta?")){sales=sales.filter(s=>s.id!==id);save();render();toast("Venta eliminada.")}}
+function setTodayHistory(){historyDate.value=todayISO();render()}
+function safeId(text){return String(text).replace(/[^a-zA-Z0-9]/g,"_")}
+function showPercent(id,total,percent){
+  const box=document.getElementById("pct_"+id);
+  const b50=document.getElementById("btn50_"+id);
+  const b55=document.getElementById("btn55_"+id);
+  if(!box)return;
+  box.textContent=percent+"% = "+money(total*percent/100);
+  if(b50)b50.classList.toggle("on",percent===50);
+  if(b55)b55.classList.toggle("on",percent===55);
+}
+function closeHTML(date){
+  const rows=salesByDate(date), total=totalByDate(date);
+  let html=`<h3>${niceDate(date)}</h3><div class="card totalBox"><div class="label">Total general</div><div class="total">${money(total)}</div><div class="percentBtns"><button id="btn50_general" class="tiny" onclick="showPercent('general',${total},50)">50%</button><button id="btn55_general" class="tiny" onclick="showPercent('general',${total},55)">55% feriado</button></div><div class="percentResult" id="pct_general"></div></div>`;
+  html+=`<div class="summary">${["Efectivo","Transferencia","Tarjeta"].map(m=>`<div class="tile"><b>${m}</b><div class="value">${money(byMethod(date,m))}</div></div>`).join("")}<div class="tile"><b>Ventas</b><div class="value">${rows.length}</div></div><div class="tile"><b>Señas</b><div class="value">${rows.filter(s=>(s.deposit||"No")==="Sí").length}</div></div></div>`;
+  html+=`<h3>Peluqueros</h3>`+people.map(p=>{
+    const t=byPerson(date,p), id=safeId(p);
+    return `<div class="sale"><b>${p}</b><div class="money">${money(t)}</div><div class="percentBtns" style="justify-content:flex-start"><button id="btn50_${id}" class="tiny" onclick="showPercent('${id}',${t},50)">50%</button><button id="btn55_${id}" class="tiny" onclick="showPercent('${id}',${t},55)">55% feriado</button></div><div class="percentResult" id="pct_${id}"></div></div>`
+  }).join("");
+  html+=closed[date]?`<div class="pill">Caja cerrada: ${new Date(closed[date]).toLocaleString("es-AR")}</div>`:"";
+  return html;
+}
+function closeDay(){const d=currentDate();closed[d]=new Date().toISOString();save();toast("Caja cerrada.");render()}
+function copyClose(){
+  const d=currentDate(), rows=salesByDate(d), total=totalByDate(d);
+  let txt=`CIERRE FESSA CAJA\\n${niceDate(d)}\\n\\nTOTAL: ${money(total)}\\nVentas: ${rows.length}\\nSeñas: ${rows.filter(s=>(s.deposit||"No")==="Sí").length}\\n\\nEfectivo: ${money(byMethod(d,"Efectivo"))}\\nTransferencia: ${money(byMethod(d,"Transferencia"))}\\nTarjeta: ${money(byMethod(d,"Tarjeta"))}\\n\\nPeluqueros:\\n`;
+  people.forEach(p=>txt+=`${p}: ${money(byPerson(d,p))}\\n`);
+  navigator.clipboard?.writeText(txt);toast("Resumen copiado.");
+}
+function addPerson(){const n=newPerson.value.trim();if(!n){toast("Escribí un nombre.");return}if(people.includes(n)){toast("Ese peluquero ya existe.");return}people.push(n);newPerson.value="";save();render()}
+function removePerson(i){if(confirm("¿Eliminar peluquero? No borra ventas anteriores.")){people.splice(i,1);save();render()}}
+function clearAll(){if(confirm("¿Borrar todos los datos de FESSA Caja?")){localStorage.removeItem(LS_PEOPLE);localStorage.removeItem(LS_SALES);localStorage.removeItem(LS_CLOSED);people=["Federico","Myriam","Melisa"];sales=[];closed={};save();render();toast("Datos borrados.")}}
+render();
+</script>
+</body>
+</html>
