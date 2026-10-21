@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>FESSA Caja</title>
+<meta name="theme-color" content="#07070b">
+<style>
+:root{
+  --bg:#07070b;--panel:#101018;--panel2:#151522;--line:rgba(210,165,255,.22);
+  --violet:#b36cff;--violet2:#7b2cff;--soft:#d8b9ff;--white:#fff;--muted:#b9b0c5;
+  --green:#34d399;--red:#ff5b7a;--blue:#60a5fa;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;min-height:100vh;background:
+radial-gradient(circle at top right,rgba(179,108,255,.22),transparent 30%),
+radial-gradient(circle at bottom left,rgba(123,44,255,.18),transparent 35%),
+linear-gradient(#090910,#030305);font-family:Arial,Helvetica,sans-serif;color:var(--white)}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.13;background:
+linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),
+linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:34px 34px}
+.app{max-width:520px;margin:auto;min-height:100vh;padding:18px 15px 88px}
+.top{text-align:center;margin:6px 0 14px}.logo{font-size:48px;font-weight:900;font-style:italic;letter-spacing:2px}
+.logo span{color:var(--violet);text-shadow:0 0 22px rgba(179,108,255,.8)}
+.subtitle{letter-spacing:8px;color:#eee;font-size:12px}.screen{display:none;animation:fade .22s}.screen.active{display:block}
+@keyframes fade{from{opacity:.25;transform:translateY(8px)}to{opacity:1;transform:none}}
+.card{border:1px solid var(--line);border-radius:23px;background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.025));box-shadow:0 18px 38px #0009,0 0 35px rgba(179,108,255,.08);padding:16px;margin:12px 0}
+h1,h2,h3{margin:5px 0 10px}.muted{color:var(--muted);font-size:14px;line-height:1.35}.date{color:var(--soft);font-weight:900}
+.totalBox{text-align:center;padding:20px}.totalBox .label{color:var(--muted);text-transform:uppercase;letter-spacing:2px;font-size:12px}.total{font-size:48px;font-weight:900;color:#fff;text-shadow:0 0 22px rgba(179,108,255,.45);margin:8px 0}
+.percentBtns{display:flex;justify-content:center;gap:8px;margin-top:6px}.tiny{width:auto;margin:0;padding:7px 12px;border-radius:999px;font-size:12px;background:#161624;border:1px solid var(--line);color:var(--soft);box-shadow:none}.tiny.on{background:linear-gradient(180deg,var(--violet),var(--violet2));color:#fff}
+.percentResult{margin-top:9px;color:var(--soft);font-weight:900}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.person{min-height:120px;text-align:left}.person b{display:block;font-size:21px}.person .amount{font-size:24px;font-weight:900;color:var(--soft);margin-top:8px}.person small{color:var(--muted)}
+button,.btn{width:100%;border:0;border-radius:17px;padding:15px 14px;margin-top:12px;background:linear-gradient(180deg,var(--violet),var(--violet2));color:#fff;font-weight:900;font-size:15px;letter-spacing:.5px;text-transform:uppercase;box-shadow:0 0 24px rgba(179,108,255,.32);text-decoration:none;display:block;text-align:center}
+button.secondary{background:#11111a;border:1px solid var(--line);box-shadow:none;color:#eee}button.green{background:linear-gradient(180deg,#38eaa1,#11875b)}button.red{background:linear-gradient(180deg,#ff6682,#9d1730)}
+label{display:block;margin:12px 0 6px;color:#ddd}input,select,textarea{width:100%;padding:14px;border-radius:14px;border:1px solid var(--line);background:#07070c;color:#fff;font-size:16px;outline:none}textarea{min-height:80px;resize:vertical}
+.sale{border:1px solid var(--line);border-radius:17px;background:#090910;padding:13px;margin:10px 0}.saleTop{display:flex;justify-content:space-between;gap:10px}.sale b{font-size:16px}.sale .money{color:var(--green);font-weight:900;font-size:20px}.pills{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}.pill{font-size:12px;padding:7px 9px;border-radius:999px;background:#202030;color:#eee;border:1px solid rgba(255,255,255,.06)}
+.nav{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:min(520px,100%);display:grid;grid-template-columns:repeat(4,1fr);gap:5px;padding:9px 10px 12px;background:linear-gradient(transparent,#000 25%,#000);z-index:20}.nav div{text-align:center;color:#aaa;font-weight:900;font-size:11px;text-transform:uppercase;border:1px solid transparent;border-radius:16px;padding:7px}.nav div.on{color:var(--soft);border-color:var(--line);background:rgba(179,108,255,.12)}.nav span{display:block;font-size:23px}
+.summary{display:grid;grid-template-columns:1fr 1fr;gap:10px}.tile{border:1px solid var(--line);border-radius:17px;padding:14px;background:#090910}.tile b{display:block}.tile .value{font-size:22px;color:var(--soft);font-weight:900;margin-top:5px}
+.toast{position:fixed;left:50%;top:15px;transform:translateX(-50%) translateY(-110px);width:min(460px,92%);background:#11111a;border:1px solid var(--line);border-radius:17px;padding:14px;text-align:center;font-weight:900;z-index:99;transition:.25s}.toast.show{transform:translateX(-50%) translateY(0)}
+.empty{border:1px dashed var(--line);border-radius:16px;color:var(--muted);padding:18px;text-align:center}.rowBtns{display:grid;grid-template-columns:1fr 1fr;gap:8px}.nameRow{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center}.nameRow button{margin:0;width:auto;padding:10px 12px;border-radius:12px}.histFilter{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:390px){.logo{font-size:42px}.total{font-size:40px}.grid,.summary{grid-template-columns:1fr}}
+
+.chart-scroll{overflow-x:auto;padding:8px 0}.chart-scroll svg{min-width:620px;width:100%;height:auto}
+.metric{background:#151522;border:1px solid var(--line);padding:14px;border-radius:14px}
+.metric strong{font-size:22px;display:block;margin:8px 0}.metric small{color:var(--muted)}
+.data-table{width:100%;border-collapse:collapse;font-size:13px}.data-table td,.data-table th{padding:10px 6px;border-bottom:1px solid var(--line);text-align:right}.data-table td:first-child,.data-table th:first-child{text-align:left}
+.positive{color:#34d399}.negative{color:#ff5b7a}
+.nav{overflow-x:auto;justify-content:flex-start;gap:10px}.nav>div{min-width:65px;flex:1;font-size:11px}
+
+#fessaLock{position:fixed;inset:0;z-index:99999;background:#08080d;display:flex;align-items:center;justify-content:center;padding:22px}#fessaLock .lockBox{width:min(420px,100%);background:#15141d;border:1px solid #38313e;border-radius:20px;padding:28px;text-align:center;box-shadow:0 20px 70px #0009}#fessaLock input{width:100%;box-sizing:border-box;margin:18px 0 8px;padding:15px;border-radius:12px;border:1px solid #5e4b71;background:#0d0c13;color:#fff;font-size:18px}#fessaLock button{width:100%;padding:14px;border-radius:12px;background:#a66bdb;color:#fff;border:0;font-weight:700}#fessaLock .lockError{color:#ff8499;min-height:22px}body.fessa-locked> :not(#fessaLock){visibility:hidden!important}body.fessa-locked{overflow:hidden}
+</style>
+</head>
+<body class="fessa-locked">
+<div id="fessaLock" role="dialog" aria-modal="true" aria-label="Acceso a FESSA Caja"><div class="lockBox"><h1>FESSA <span style="color:#b784e6">CAJA</span></h1><p>Ingresá tu clave para continuar</p><form id="fessaLoginForm"><input id="fessaLoginPassword" type="password" placeholder="Contraseña" autocomplete="current-password" required autofocus><button type="submit">Ingresar</button><p id="fessaLoginError" class="lockError" aria-live="polite"></p></form></div></div>
+
+<div id="toast" class="toast"></div>
+<main class="app">
+  <div class="top">
+    <div class="logo">FESSA <span>CAJA</span></div>
+    <div class="subtitle">PELUQUERÍA</div>
+  </div>
+
+  <section id="home" class="screen active">
+    <div class="card totalBox">
+      <div class="date" id="todayLabel"></div>
+      <div class="label">Total del día</div>
+      <div class="total" id="todayTotal">$0</div>
+      <div class="muted">Suma total de todos los peluqueros</div><button onclick="go('sale')">➕ Agregar venta</button>
+    </div>
+
+    <div class="card">
+      <h2>💇 Peluqueros</h2>
+      <p class="muted">Tocá un peluquero para cargar una venta rápido.</p>
+      <div class="grid" id="peopleCards"></div>
+    </div>
+
+    <div class="card">
+      <h2>📌 Totales por pago</h2>
+      <div class="summary" id="paySummary"></div>
+    </div>
+  </section>
+
+  <section id="sale" class="screen">
+    <div class="card">
+      <h2>➕ Nueva venta</h2>
+      <label>Peluquero</label>
+      <select id="salePerson"></select>
+      <label>Fecha de la venta</label><input id="saleDate" type="date">
+      <label>Servicio</label>
+      <input id="saleService" placeholder="Ej: Corte, color, brushing...">
+      <label>Importe</label>
+      <input id="saleAmount" type="number" placeholder="Ej: 15000">
+      <label>Método de pago</label>
+      <select id="saleMethod">
+        <option>Efectivo</option>
+        <option>Transferencia</option>
+        <option>Tarjeta</option>
+        <option>Mercado Pago</option>
+      </select>
+      <label>¿Dejó seña?</label>
+      <select id="saleDeposit">
+        <option>No</option>
+        <option>Sí</option>
+      </select>
+      <label>Observación</label>
+      <textarea id="saleNote" placeholder="Opcional"></textarea>
+      <button class="green" onclick="saveSale()">Guardar venta</button>
+      <button class="secondary" onclick="go('home')">Volver</button>
+    </div>
+  </section>
+
+  <section id="history" class="screen">
+    <div class="card">
+      <h2>📅 Historial</h2>
+      <div class="histFilter">
+        <input id="historyDate" type="date" onchange="render()">
+        <button class="secondary" onclick="setTodayHistory()">Hoy</button>
+      </div>
+      <div id="historyList"></div>
+    </div>
+  </section>
+
+  <section id="close" class="screen">
+    <div class="card">
+      <h2>📄 Cierre de caja</h2>
+      <p class="muted">Resumen del día seleccionado.</p>
+      <div id="closeSummary"></div>
+      <button onclick="closeDay()">Cerrar caja del día</button>
+      <button class="secondary" onclick="copyClose()">📋 Copiar resumen</button>
+    </div>
+  </section>
+
+  <section id="config" class="screen">
+    <div class="card">
+      <h2>⚙️ Configuración</h2>
+      <p class="muted">Agregá o quitá peluqueros. No queda fijo en el código.</p>
+      <label>Nuevo peluquero</label>
+      <input id="newPerson" placeholder="Nombre">
+      <button onclick="addPerson()">Agregar peluquero</button>
+      <div id="peopleConfig"></div>
+      <button class="red" onclick="clearAll()">Borrar todos los datos</button>
+    </div>
+  </section>
+
+<section id="analytics" class="screen">
+ <div class="card"><h2>📈 Inteligencia de negocio</h2><p class="muted">Compará ingresos, gastos y resultados reales. La facturación no es ganancia: para ver ganancia neta, registrá tus gastos.</p>
+ <div class="histFilter"><div><label>Desde</label><input type="month" id="aFrom" onchange="renderAnalytics()"></div><div><label>Hasta</label><input type="month" id="aTo" onchange="renderAnalytics()"></div></div>
+ <div id="aCards" class="summary"></div><h3>Facturación y resultado por mes</h3><div id="aChart" class="chart-scroll"></div><div id="aTable"></div>
+ </div>
+ <div class="card"><h2>👥 Rendimiento del equipo</h2><div id="aTeam"></div></div>
+ <div class="card"><h2>💳 Medios de pago</h2><div id="aMethods"></div></div>
+</section>
+<section id="expenses" class="screen">
+ <div class="card"><h2>🧾 Gastos del negocio</h2><p class="muted">Alquiler, insumos, servicios, comisiones y otros costos. Son necesarios para calcular tu resultado.</p>
+ <label>Fecha</label><input type="date" id="expenseDate">
+ <label>Concepto</label><input id="expenseConcept" placeholder="Ej.: Alquiler, tinturas, luz">
+ <label>Importe</label><input type="number" id="expenseAmount" min="1" placeholder="Ej.: 65000">
+ <button onclick="addExpense()">Guardar gasto</button><div id="expenseList"></div>
+ </div>
+</section>
+<section id="tools" class="screen">
+ <div class="card"><h2>📦 Respaldo y carga masiva</h2><p class="muted">Tus ventas actuales se mantienen en este navegador. Guardá copias para no perderlas al cambiar de celular o borrar datos.</p>
+ <button onclick="exportBackup()">⬇ Descargar respaldo JSON</button>
+ <button class="secondary" onclick="exportCSV()">⬇ Exportar ventas CSV</button>
+ <label>Restaurar respaldo JSON (fusiona sin repetir IDs)</label><input type="file" id="backupFile" accept=".json,application/json" onchange="importBackup(event)">
+ </div>
+ <div class="card"><h2>📷 Cargar desde foto</h2><p class="muted">Sacá una foto al cuaderno. Esta versión permite conservar la imagen y transcribir sus ventas en una tabla editable. La lectura automática de manuscritos requiere conectar un servicio de reconocimiento; no se inventan importes.</p>
+ <input type="file" accept="image/*" capture="environment" id="notebookPhoto" onchange="showNotebookPhoto(event)">
+ <img id="notebookPreview" style="width:100%;max-height:320px;object-fit:contain;display:none;margin-top:12px" alt="Foto del cuaderno">
+ <label>Fecha de la hoja</label><input type="date" id="batchDate">
+ <label>Movimientos (uno por línea: Peluquero; importe; MP/EF/Tarjeta; SÑ opcional; servicio opcional)</label>
+ <textarea id="batchText" rows="7" placeholder="Federico; 19000; EF; Corte&#10;Myriam; 160000+22000; MP; SÑ; Color"></textarea>
+ <button onclick="previewBatch()">Revisar movimientos</button><div id="batchReview"></div>
+ </div>
+</section>
+</main>
+
+<nav class="nav">
+  <div id="navHome" class="on" onclick="go('home')"><span>🏠</span>Inicio</div>
+  <div id="navSale" onclick="go('sale')"><span>➕</span>Venta</div>
+  <div id="navHistory" onclick="go('history')"><span>📅</span>Historial</div>
+  <div onclick="go('analytics')"><span>📈</span>Análisis</div><div onclick="go('expenses')"><span>🧾</span>Gastos</div><div onclick="go('tools')"><span>📷</span>Herram.</div><div id="navConfig" onclick="go('config')"><span>⚙️</span>Config</div>
+</nav>
+
+<script>
+const LS_PEOPLE="fessa_caja_people_v1", LS_SALES="fessa_caja_sales_v1", LS_CLOSED="fessa_caja_closed_v1";
+let selectedPercent=null;
+let people=JSON.parse(localStorage.getItem(LS_PEOPLE)||'["Federico","Myriam","Melisa"]');
+let sales=JSON.parse(localStorage.getItem(LS_SALES)||"[]");
+let closed=JSON.parse(localStorage.getItem(LS_CLOSED)||"{}");
+
+function save(){localStorage.setItem(LS_PEOPLE,JSON.stringify(people));localStorage.setItem(LS_SALES,JSON.stringify(sales));localStorage.setItem(LS_CLOSED,JSON.stringify(closed))}
+function money(n){return "$"+Number(n||0).toLocaleString("es-AR")}
+function todayISO(){return new Date().toISOString().slice(0,10)}
+function niceDate(iso){return new Date(iso+"T00:00:00").toLocaleDateString("es-AR",{weekday:"long",day:"2-digit",month:"2-digit",year:"numeric"})}
+function toast(msg){toastEl.textContent=msg;toastEl.classList.add("show");setTimeout(()=>toastEl.classList.remove("show"),2300)}
+function currentDate(){return historyDate?.value||todayISO()}
+function salesByDate(date=todayISO()){return sales.filter(s=>s.date===date)}
+function totalByDate(date=todayISO()){return salesByDate(date).reduce((a,s)=>a+Number(s.amount||0),0)}
+function byMethod(date=todayISO(),method){return salesByDate(date).filter(s=>s.method===method).reduce((a,s)=>a+Number(s.amount||0),0)}
+function byPerson(date=todayISO(),person){return salesByDate(date).filter(s=>s.person===person).reduce((a,s)=>a+Number(s.amount||0),0)}
+
+function go(id){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  document.querySelectorAll(".nav div").forEach(n=>n.classList.remove("on"));
+  if(["home","sale","history","close","config"].includes(id))({home:navHome,sale:navSale,history:navHistory,close:navHistory,config:navConfig}[id]||navHome).classList.add("on");
+  render();if(id==="analytics")renderAnalytics();if(id==="expenses")renderExpenses();
+}
+function setPersonAndGo(p){salePerson.value=p;go("sale")}
+function calcPercent(p){selectedPercent=p}
+function showPersonPercent(id,total,percent){
+  const box=document.getElementById("homepct_"+id);
+  const b50=document.getElementById("home50_"+id);
+  const b55=document.getElementById("home55_"+id);
+  if(!box)return;
+  box.textContent=percent+"% = "+money(total*percent/100);
+  if(b50)b50.classList.toggle("on",percent===50);
+  if(b55)b55.classList.toggle("on",percent===55);
+}
+function render(){
+  todayLabel.textContent=niceDate(todayISO());
+  todayTotal.textContent=money(totalByDate(todayISO()));
+
+  if(!saleDate.value) saleDate.value=todayISO();
+  salePerson.innerHTML=people.map(p=>`<option>${p}</option>`).join("");
+  peopleCards.innerHTML=people.length?people.map(p=>{
+  const total=byPerson(todayISO(),p), id=safeId(p);
+  return `<div class="card person"><b>${p}</b><small>Total hoy</small><div class="amount">${money(total)}</div><div class="percentBtns" style="justify-content:flex-start"><button id="home50_${id}" class="tiny" onclick="showPersonPercent('${id}',${total},50)">50%</button><button id="home55_${id}" class="tiny" onclick="showPersonPercent('${id}',${total},55)">55% feriado</button></div><div class="percentResult" id="homepct_${id}"></div><button class="tiny" onclick="setPersonAndGo('${p.replaceAll("'","\'")}')">Cargar venta</button></div>`
+}).join(""):'<div class="empty">Agregá peluqueros en Configuración.</div>';
+  paySummary.innerHTML=["Efectivo","Transferencia","Tarjeta","Mercado Pago"].map(m=>`<div class="tile"><b>${m}</b><div class="value">${money(byMethod(todayISO(),m))}</div></div>`).join("");
+
+  if(!historyDate.value) historyDate.value=todayISO();
+  const d=currentDate(), rows=salesByDate(d).sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)));
+  historyList.innerHTML=`<h3>${niceDate(d)}</h3><div class="summary"><div class="tile"><b>Total</b><div class="value">${money(totalByDate(d))}</div></div><div class="tile"><b>Ventas</b><div class="value">${rows.length}</div></div></div>`+(rows.length?rows.map(s=>saleHTML(s,true)).join(""):'<div class="empty">No hay ventas cargadas en esta fecha.</div>')+`<button onclick="go('close')">Ver cierre</button>`;
+
+  closeSummary.innerHTML=closeHTML(d);
+  peopleConfig.innerHTML=people.map((p,i)=>`<div class="sale nameRow"><b>${p}</b><button class="red tiny" onclick="removePerson(${i})">Eliminar</button></div>`).join("")||'<div class="empty">No hay peluqueros.</div>';
+}
+function saleHTML(s,allowDelete=false){
+  return `<div class="sale"><div class="saleTop"><div><b>${s.person}</b><div class="muted">${new Date(s.createdAt).toLocaleTimeString("es-AR",{hour:"2-digit",minute:"2-digit"})} · ${s.service||"Servicio"}</div></div><div class="money">${money(s.amount)}</div></div><div class="pills"><span class="pill">${s.method}</span><span class="pill">Señó: ${s.deposit||"No"}</span>${s.note?`<span class="pill">${s.note}</span>`:""}</div>${allowDelete?`<button class="secondary tiny" onclick="deleteSale('${s.id}')">Eliminar</button>`:""}</div>`
+}
+function saveSale(){
+  if(!saleDate.value) saleDate.value=todayISO();
+  const person=salePerson.value, service=saleService.value.trim(), amount=Number(saleAmount.value||0), method=saleMethod.value, note=saleNote.value.trim();
+  if(!person){toast("Agregá un peluquero.");return}
+  if(!service){toast("Completá el servicio.");return}
+  if(amount<=0){toast("Completá un importe válido.");return}
+  sales.push({id:Date.now()+"",date:(saleDate.value||todayISO()),createdAt:new Date().toISOString(),person,service,amount,method,deposit:saleDeposit.value,note});
+  saleService.value="";saleAmount.value="";saleNote.value="";saleDeposit.value="No";
+  save();toast("Venta guardada.");go("home");
+}
+function deleteSale(id){if(confirm("¿Eliminar esta venta?")){sales=sales.filter(s=>s.id!==id);save();render();toast("Venta eliminada.")}}
+function setTodayHistory(){historyDate.value=todayISO();render()}
+function safeId(text){return String(text).replace(/[^a-zA-Z0-9]/g,"_")}
+function showPercent(id,total,percent){
+  const box=document.getElementById("pct_"+id);
+  const b50=document.getElementById("btn50_"+id);
+  const b55=document.getElementById("btn55_"+id);
+  if(!box)return;
+  box.textContent=percent+"% = "+money(total*percent/100);
+  if(b50)b50.classList.toggle("on",percent===50);
+  if(b55)b55.classList.toggle("on",percent===55);
+}
+function closeHTML(date){
+  const rows=salesByDate(date), total=totalByDate(date);
+  let html=`<h3>${niceDate(date)}</h3><div class="card totalBox"><div class="label">Total general</div><div class="total">${money(total)}</div><div class="percentBtns"><button id="btn50_general" class="tiny" onclick="showPercent('general',${total},50)">50%</button><button id="btn55_general" class="tiny" onclick="showPercent('general',${total},55)">55% feriado</button></div><div class="percentResult" id="pct_general"></div></div>`;
+  html+=`<div class="summary">${["Efectivo","Transferencia","Tarjeta","Mercado Pago"].map(m=>`<div class="tile"><b>${m}</b><div class="value">${money(byMethod(date,m))}</div></div>`).join("")}<div class="tile"><b>Ventas</b><div class="value">${rows.length}</div></div><div class="tile"><b>Señas</b><div class="value">${rows.filter(s=>(s.deposit||"No")==="Sí").length}</div></div></div>`;
+  html+=`<h3>Peluqueros</h3>`+people.map(p=>{
+    const t=byPerson(date,p), id=safeId(p);
+    return `<div class="sale"><b>${p}</b><div class="money">${money(t)}</div><div class="percentBtns" style="justify-content:flex-start"><button id="btn50_${id}" class="tiny" onclick="showPercent('${id}',${t},50)">50%</button><button id="btn55_${id}" class="tiny" onclick="showPercent('${id}',${t},55)">55% feriado</button></div><div class="percentResult" id="pct_${id}"></div></div>`
+  }).join("");
+  html+=closed[date]?`<div class="pill">Caja cerrada: ${new Date(closed[date]).toLocaleString("es-AR")}</div>`:"";
+  return html;
+}
+function closeDay(){const d=currentDate();closed[d]=new Date().toISOString();save();toast("Caja cerrada.");render()}
+function copyClose(){
+  const d=currentDate(), rows=salesByDate(d), total=totalByDate(d);
+  let txt=`CIERRE FESSA CAJA\\n${niceDate(d)}\\n\\nTOTAL: ${money(total)}\\nVentas: ${rows.length}\\nSeñas: ${rows.filter(s=>(s.deposit||"No")==="Sí").length}\\n\\nEfectivo: ${money(byMethod(d,"Efectivo"))}\\nTransferencia: ${money(byMethod(d,"Transferencia"))}\\nTarjeta: ${money(byMethod(d,"Tarjeta"))}\\n\\nPeluqueros:\\n`;
+  people.forEach(p=>txt+=`${p}: ${money(byPerson(d,p))}\\n`);
+  navigator.clipboard?.writeText(txt);toast("Resumen copiado.");
+}
+function addPerson(){const n=newPerson.value.trim();if(!n){toast("Escribí un nombre.");return}if(people.includes(n)){toast("Ese peluquero ya existe.");return}people.push(n);newPerson.value="";save();render()}
+function removePerson(i){if(confirm("¿Eliminar peluquero? No borra ventas anteriores.")){people.splice(i,1);save();render()}}
+function clearAll(){if(confirm("¿Borrar todas las ventas y peluqueros? Los gastos se conservan. Hacé antes un respaldo.")){localStorage.removeItem(LS_PEOPLE);localStorage.removeItem(LS_SALES);localStorage.removeItem(LS_CLOSED);people=["Federico","Myriam","Melisa"];sales=[];closed={};save();render();toast("Datos borrados.")}}
+
+const EXP_KEY="fessa_caja_expenses_v2";
+let expenses=JSON.parse(localStorage.getItem(EXP_KEY)||"[]");
+const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const cash=n=>money(Number(n)||0);
+function persistExpenses(){localStorage.setItem(EXP_KEY,JSON.stringify(expenses))}
+function monthOf(s){return String(s.date||"").slice(0,7)}
+function monthSummary(month){
+ const ss=sales.filter(x=>monthOf(x)===month),ee=expenses.filter(x=>monthOf(x)===month);
+ const revenue=ss.reduce((a,x)=>a+Number(x.amount||0),0),cost=ee.reduce((a,x)=>a+Number(x.amount||0),0);
+ return {month,revenue,cost,profit:revenue-cost,count:ss.length,ticket:ss.length?revenue/ss.length:0};
+}
+function renderAnalytics(){
+ const months=[...new Set([...sales.map(monthOf),...expenses.map(monthOf)])].filter(Boolean).sort();
+ if(!aFrom.value)aFrom.value=months[0]||new Date().toISOString().slice(0,7);
+ if(!aTo.value)aTo.value=months.at(-1)||new Date().toISOString().slice(0,7);
+ const start=aFrom.value,end=aTo.value, all=[];
+ if(start<=end){let [y,m]=start.split("-").map(Number);for(let i=0;i<120;i++){const key=`${y}-${String(m).padStart(2,"0")}`;if(key>end)break;all.push(monthSummary(key));m++;if(m===13){m=1;y++}}}
+ const rev=all.reduce((a,x)=>a+x.revenue,0),cost=all.reduce((a,x)=>a+x.cost,0),count=all.reduce((a,x)=>a+x.count,0);
+ const last=all.at(-1),prev=all.at(-2),delta=prev&&prev.revenue?((last.revenue-prev.revenue)/prev.revenue*100):null;
+ aCards.innerHTML=[["Facturación",cash(rev),"Ventas registradas"],["Gastos",cash(cost),"Costos ingresados"],["Resultado",cash(rev-cost),"Antes de impuestos y retiros no cargados"],["Ticket promedio",cash(count?rev/count:0),count+" ventas"],["Variación mensual",delta===null?"Sin comparación":`${delta>=0?"+":""}${delta.toFixed(1)}%`,"Último mes frente al anterior"]].map(([a,b,c])=>`<div class="metric"><small>${a}</small><strong>${b}</strong><small>${c}</small></div>`).join("");
+ const max=Math.max(1,...all.flatMap(x=>[x.revenue,Math.max(0,x.profit)])),w=Math.max(620,all.length*95),h=260,baseY=215;
+ aChart.innerHTML=all.length?`<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Barras mensuales de facturación y resultado"><line x1="32" y1="${baseY}" x2="${w-12}" y2="${baseY}" stroke="#7b7189"/>${all.map((x,i)=>{let cx=60+i*95,hr=x.revenue/max*170,hp=Math.max(0,x.profit)/max*170;return `<rect x="${cx-17}" y="${baseY-hr}" width="27" height="${hr}" rx="4" fill="#b36cff"/><rect x="${cx+12}" y="${baseY-hp}" width="27" height="${hp}" rx="4" fill="#34d399"/><text x="${cx+10}" y="240" fill="#d8b9ff" font-size="12" text-anchor="middle">${x.month.slice(5)}/${x.month.slice(2,4)}</text>`}).join("")}</svg><p class="muted">🟣 Facturación · 🟢 Resultado positivo (ingresos menos gastos registrados). Los resultados negativos figuran en la tabla.</p>`:'<div class="empty">No hay meses en este rango.</div>';
+ aTable.innerHTML=`<div style="overflow-x:auto"><table class="data-table"><thead><tr><th>Mes</th><th>Facturación</th><th>Gastos</th><th>Resultado</th><th>Variación</th></tr></thead><tbody>${all.map((x,i)=>{let p=all[i-1],d=p&&p.revenue?((x.revenue/p.revenue)/p.revenue*100):null;d=p&&p.revenue?(x.revenue-p.revenue)/p.revenue*100:null;return `<tr><td>${x.month}</td><td>${cash(x.revenue)}</td><td>${cash(x.cost)}</td><td class="${x.profit>=0?'positive':'negative'}">${cash(x.profit)}</td><td>${d===null?'—':`${d>=0?'+':''}${d.toFixed(1)}%`}</td></tr>`}).join("")}</tbody></table></div>`;
+ const filtered=sales.filter(x=>monthOf(x)>=start&&monthOf(x)<=end);
+ const peopleNames=[...new Set(filtered.map(x=>x.person))];
+ aTeam.innerHTML=peopleNames.map(p=>{const rows=filtered.filter(x=>x.person===p),sum=rows.reduce((a,x)=>a+Number(x.amount||0),0);return `<div class="sale"><b>${esc(p)}</b><div>${cash(sum)} · ${rows.length} ventas · Ticket ${cash(rows.length?sum/rows.length:0)}</div></div>`}).join("")||'<div class="empty">Sin movimientos</div>';
+ const methods=[...new Set(filtered.map(x=>x.method))];
+ aMethods.innerHTML=methods.map(m=>{let n=filtered.filter(x=>x.method===m).reduce((a,x)=>a+Number(x.amount||0),0);return `<div class="sale"><b>${esc(m)}</b> · ${cash(n)} (${rev?(n/rev*100).toFixed(1):0}%)</div>`}).join("")||'<div class="empty">Sin movimientos</div>';
+}
+function addExpense(){let amount=Number(expenseAmount.value),concept=expenseConcept.value.trim(),date=expenseDate.value||todayISO();if(!concept||!(amount>0)){toast("Completá concepto e importe.");return}expenses.push({id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),date,concept,amount});persistExpenses();expenseConcept.value="";expenseAmount.value="";renderExpenses();toast("Gasto guardado")}
+function renderExpenses(){if(!expenseDate.value)expenseDate.value=todayISO();expenseList.innerHTML=expenses.slice().sort((a,b)=>b.date.localeCompare(a.date)).map(x=>`<div class="sale"><b>${esc(x.date)} · ${esc(x.concept)}</b> <span class="money">${cash(x.amount)}</span><button class="tiny secondary" onclick="removeExpense('${x.id}')">Eliminar</button></div>`).join("")||'<div class="empty">Todavía no hay gastos registrados.</div>'}
+function removeExpense(id){if(!confirm("¿Eliminar este gasto?"))return;expenses=expenses.filter(x=>x.id!==id);persistExpenses();renderExpenses()}
+function downloadFile(name,contents,type){const u=URL.createObjectURL(new Blob([contents],{type})),a=document.createElement("a");a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}
+function exportBackup(){downloadFile("fessa-respaldo-"+todayISO()+".json",JSON.stringify({version:2,sales,people,closed,expenses},null,2),"application/json")}
+function exportCSV(){let lines=[["Fecha","Peluquero","Servicio","Importe","Medio","Seña","Nota"],...sales.map(s=>[s.date,s.person,s.service,s.amount,s.method,s.deposit,s.note])];downloadFile("fessa-ventas.csv","\ufeff"+lines.map(r=>r.map(v=>'"'+String(v??"").replace(/"/g,'""')+'"').join(";")).join("\r\n"),"text/csv;charset=utf-8")}
+async function importBackup(e){const f=e.target.files[0];if(!f)return;try{let obj=JSON.parse(await f.text());if(!Array.isArray(obj.sales))throw Error("Formato no reconocido");if(!confirm(`¿Fusionar ${obj.sales.length} ventas del respaldo? No se reemplazarán ventas con el mismo ID.`))return;const ids=new Set(sales.map(x=>String(x.id)));let added=0;for(const x of obj.sales){if(!x.id||!x.date||!Number.isFinite(Number(x.amount)))continue;if(!ids.has(String(x.id))){sales.push(x);ids.add(String(x.id));added++}}if(Array.isArray(obj.expenses)){let ei=new Set(expenses.map(x=>String(x.id)));for(const x of obj.expenses)if(x.id&&!ei.has(String(x.id))){expenses.push(x);ei.add(String(x.id))}}save();persistExpenses();render();toast(added+" ventas importadas")}catch(err){alert("No se pudo leer el respaldo: "+err.message)}e.target.value=""}
+function showNotebookPhoto(e){let f=e.target.files[0];if(!f)return;let img=document.getElementById("notebookPreview");if(img.dataset.url)URL.revokeObjectURL(img.dataset.url);img.dataset.url=URL.createObjectURL(f);img.src=img.dataset.url;img.style.display="block";if(!batchDate.value)batchDate.value=todayISO()}
+let pendingBatch=[];
+function previewBatch(){
+ const date=batchDate.value;if(!date){toast("Elegí la fecha");return}
+ if(sales.some(x=>x.date===date)){batchReview.innerHTML='<div class="empty">Esta fecha ya tiene ventas. Se bloqueó la importación completa para evitar duplicados.</div>';pendingBatch=[];return}
+ let errors=[],items=[];batchText.value.split(/\n/).map(x=>x.trim()).filter(Boolean).forEach((line,i)=>{let [person,amount,method,deposit,service]=line.split(";").map(x=>(x||"").trim());let parts=amount.replace(/\s/g,"").split("+").map(x=>Number(x.replace(/\./g,"").replace(",",".")));let n=parts.reduce((a,b)=>a+b,0);let name=people.find(p=>p.toLowerCase()===person.toLowerCase());if(!name||!parts.length||parts.some(x=>!Number.isFinite(x)||x<=0)){errors.push("Línea "+(i+1)+": revisar nombre o importe");return}items.push({id:"foto-"+Date.now()+"-"+i,date,createdAt:new Date().toISOString(),person:name,amount:n,method:/^mp$/i.test(method)?"Mercado Pago":/^ef$/i.test(method)?"Efectivo":/^tarjeta$/i.test(method)?"Tarjeta":"Sin especificar",deposit:/^(sñ|si|sí)$/i.test(deposit)?"Sí":"No",service:service||"Cuaderno",note:"Carga desde cuaderno"})});
+ pendingBatch=errors.length?[]:items;
+ batchReview.innerHTML=(errors.length?`<div class="empty">${errors.map(esc).join("<p>")}</div>`:"")+items.map(x=>`<div class="sale">${esc(x.person)} · ${cash(x.amount)} · ${esc(x.method)} · Seña: ${x.deposit}</div>`).join("")+(!errors.length&&items.length?`<button onclick="confirmBatch()">Confirmar ${items.length} movimientos</button>`:"");
+}
+function confirmBatch(){if(!pendingBatch.length)return;let date=pendingBatch[0].date;if(sales.some(x=>x.date===date)){toast("Fecha ya cargada");return}sales.push(...pendingBatch);pendingBatch=[];save();render();batchReview.innerHTML='<div class="empty">Movimientos guardados.</div>';toast("Carga completa")}
+
+render();
+</script>
+<script>
+(function(){
+const KEY="fessa_caja_access_session_v1";
+const PASSWORD="nina123"; // Protección visual local, no autenticación de servidor.
+const lock=document.getElementById("fessaLock");
+function unlock(){document.body.classList.remove("fessa-locked");lock.remove()}
+if(sessionStorage.getItem(KEY)==="yes")unlock();
+else document.getElementById("fessaLoginForm").addEventListener("submit",function(e){e.preventDefault();if(document.getElementById("fessaLoginPassword").value===PASSWORD){sessionStorage.setItem(KEY,"yes");unlock()}else{document.getElementById("fessaLoginError").textContent="Clave incorrecta";document.getElementById("fessaLoginPassword").value="";}});
+})();
+</script>
+</body>
+</html>
